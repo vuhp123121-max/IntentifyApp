@@ -1,0 +1,1 @@
+.venv/ __pycache__/ initgit add .git commit -m "Initial commit"git branch -M maingit remote add origin https://github.com/vuhp123121-max/IntentifyApp.gitgit push -u origin main --force

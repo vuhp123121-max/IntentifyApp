@@ -1,0 +1,33 @@
+1 Hệ thống Intent Recognition
+
+Câu tiếng Anh
+   │
+   ▼
+[1] Chuẩn hóa: bỏ khoảng trắng thừa, xử lý chuỗi rỗng
+   │
+   ▼
+[2] Embedding: sentence-transformers (nếu có), không thì TF-IDF
+   │
+   ▼
+[3] Truy xuất kNN trên các câu ví dụ đã gán nhãn
+    → điểm tương đồng cao nhất của từng intent
+   │
+   ▼
+[4] Kiểm tra độ tin cậy
+   ├─ điểm top ≥ 0.75 VÀ hơn intent thứ 2 ≥ 0.12──► Trả kết quả ngay (fast path)
+   └─ ngược lại 
+        │
+        ▼
+   [5] LLM path
+       a. Dựng prompt: danh sách intent + mô tả + k ví dụ gần nhất + câu cần phân loại
+       b. LLM trả về JSON: {intent, confidence, reasoning}
+       c. Có nhãn "out_of_scope" để LLM từ chối thay vì ép nhãn
+        │
+        ▼
+   [6] Kiểm tra đầu ra: nhãn lạ hoặc JSON hỏng → out_of_scope / fallback
+   │
+   ▼
+IntentResult {intent, confidence, source: fast | llm | fallback}
+
+dùng văn bản txt 
+dùng giọng nói 
