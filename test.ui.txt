@@ -1,0 +1,2 @@
+Sau khi code chạy được hệ thống xong là phải xem độ tối ưu(về ngôn ngữ)giao diện phải có mục option các ngôn ngữ
+để chọn lựa đầu input còn đầu output sẽ có 2 ngôn ngữ đó là Tiếng Anh và Tiếng Việt
