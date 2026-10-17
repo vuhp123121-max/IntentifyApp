@@ -1,0 +1,82 @@
+Luồng sự kiện của train.py(mức độ cơ bản)
+
+Bước nạp và kiểm tra dữ liệu chưa có huấn luyện mô hình
+
+Đường dẫn CSV
+   ↓
+Đọc các dòng thành danh sách dictionary
+   ↓
+Kiểm tra cột sentence và intent
+   ↓
+Đếm số câu theo intent
+   ↓
+In thống kê ra màn hình
+
+
+1. Import thư viện
+import csv
+from collections import Counter
+from pathlib import Path
+
+csv: đọc dữ liệu CSV.
+Counter: đếm số lần mỗi intent xuất hiện.
+Path: tạo đường dẫn tệp theo cách phù hợp với hệ điều hành
+
+2. Tạo đường dẫn tới CSV
+
+data_path = Path(__file__).parent / "data" / "dataset" / "intents.csv"
+
+__file__ là đường dẫn tới chính train.py.
+.parent lấy thư mục chứa train.py.
+Các phần sau nối thành đường dẫn tới data/dataset/intents.csv.
+3.Đọc CSV
+with data_path.open("r", encoding="utf-8", newline="") as file:
+    rows = list(csv.DictReader(file))
+
+DictReader dùng hàng đầu tiên làm tên cột. Với tiêu đề:
+sentence,intent
+
+mỗi dòng trở thành một dictionary, ví dụ:
+
+{
+    "sentence": "Book me a flight to Tokyo",
+    "intent": "book_flight"
+}
+
+rows là danh sách tất cả các dictionary đó. list(...) đọc các dòng vào bộ nhớ để có thể đếm và truy cập nhiều lần.
+
+4. Kiểm tra tiêu đề và dữ liệu
+
+if not rows or "sentence" not in rows[0] or "intent" not in rows[0]:
+    raise ValueError("CSV cần có hai cột: sentence,intent")
+
+- not rows: kiểm tra tệp không rỗng.
+- rows[0]: lấy dòng dữ liệu đầu tiên.
+- "sentence" not in rows[0]: kiểm tra dictionary có cột sentence.
+- Tương tự cho intent.
+- raise ValueError(...): dừng chương trình và báo lỗi rõ ràng nếu dữ liệu không đúng định dạng.
+Vì or sẽ dừng kiểm tra khi điều kiện đầu tiên đúng, chương trình không truy cập rows[0] nếu danh sách rỗng.
+5. Đếm số câu theo intent
+
+label_counts = Counter(row["intent"] for row in rows)
+
+Đoạn này đọc giá trị intent của từng dòng và đếm số lần xuất hiện. Ví dụ kết quả có thể là:
+EXP:
+Counter({
+    "book_flight": 13,
+    "cancel_order": 13,
+    "check_weather": 13
+})
+
+6. In kết quả
+
+print(f"Số câu: {len(rows)}")
+print("Số câu theo intent:")
+for intent, count in sorted(label_counts.items()):
+    print(f"  {intent}: {count}")
+
+len(rows) in tổng số dòng dữ liệu.
+.items() lấy từng cặp (intent, số lượng).
+sorted(...) sắp xếp theo tên intent để kết quả luôn dễ đọc.
+Vòng for in số câu cho mỗi nhãn.
+

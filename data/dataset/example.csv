@@ -1,4 +1,10 @@
-
-Book me a flight to Tokyo, book_flight
-Cancel my order, cancel_order
-What is the weather in DaNang, weather_in_DaNang
+sentence,intent
+Book me a flight to Tokyo,book_flight
+I need a plane ticket to Paris,book_flight
+Find flights from Hanoi to Singapore,book_flight
+Cancel my order,cancel_order
+Please cancel the purchase I made yesterday,cancel_order
+I want to call off my order,cancel_order
+What is the weather in Da Nang,check_weather
+Will it rain in Hanoi tomorrow,check_weather
+Give me today's forecast for Tokyo,check_weather

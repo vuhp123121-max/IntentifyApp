@@ -1,0 +1,43 @@
+import torch
+from model import IntentClassifier
+
+# Tạo mô hình thử: 20 mã từ, 3 intent, embedding 32 chiều
+model = IntentClassifier(vocab_size=20, num_classes=3)
+
+# Hai câu giả lập, mỗi câu dài 4 token.
+# Số 0 là padding; các số còn lại là mã từ.
+token_ids = torch.tensor([
+    [2, 5, 7, 0],
+    [3, 4, 0, 0],
+])
+
+scores = model(token_ids)
+
+print("Điểm số:", scores)
+print("Kích thước đầu ra:", scores.shape)
+print("Vị trí intent điểm cao nhất:", scores.argmax(dim=1))
+
+
+đây là câu test model
+
+Sẽ có 3 loại kết quả
+Điểm số: tensor([[..., ..., ...],
+                 [..., ..., ...]])
+Kích thước đầu ra: torch.Size([2, 3])
+Vị trí intent điểm cao nhất: tensor([..., ...])
+
+1. Điểm số
+có 2 hàng score  
+tensor([[ 0.2, -0.1,  0.4],
+        [-0.3,  0.5,  0.1]])
+Nếu thứ tự nhãn là ["book_flight", "cancel_order", "check_weather"], hàng đầu có điểm cao nhất ở vị trí 3, tức check_weather. 
+Hàng thứ hai cao nhất ở vị trí 2, tức cancel_order.
+nó được quyết định thông qua số token_ids được đưa đầu vào
+2.Kích thước đầu ra 
+torch.Size([2, 3])
+- 2: có hai câu đầu vào.
+- 3: mỗi câu có ba điểm số, tương ứng với ba intent.
+Nếu thử một câu thay vì hai, kích thước sẽ là [1, 3].
+3. Vị trí intent điểm cao nhất
+tensor([2, 1])
+Đây là chỉ số của điểm lớn nhất trong mỗi hàng, bắt đầu đếm từ 0. Theo thứ tự nhãn ví dụ ở trên, 3 ứng với check_weather, còn 2 ứng với cancel_order.

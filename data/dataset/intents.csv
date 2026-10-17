@@ -1,0 +1,40 @@
+sentence,intent
+Book me a flight to Tokyo,book_flight
+I need a plane ticket to Paris,book_flight
+Find flights from Hanoi to Singapore,book_flight
+Cancel my order,cancel_order
+Please cancel the purchase I made yesterday,cancel_order
+I want to call off my order,cancel_order
+What is the weather in Da Nang,check_weather
+Will it rain in Hanoi tomorrow,check_weather
+Give me today's forecast for Tokyo,check_weather
+I want to book a flight to London,book_flight
+Can you find me a flight to New York,book_flight
+I need a ticket from Hanoi to Seoul,book_flight
+Book a round trip to Bangkok,book_flight
+Are there any flights to Singapore tomorrow,book_flight
+Find me the cheapest flight to Tokyo,book_flight
+I would like to fly from Da Nang to Paris,book_flight
+Reserve a seat on a flight to Sydney,book_flight
+Help me book an airline ticket to Berlin,book_flight
+Show me flights leaving Hanoi next Monday,book_flight
+Please cancel my recent order,cancel_order
+I want to cancel the order I placed today,cancel_order
+Can you stop my order from being shipped,cancel_order
+Cancel order number 4821,cancel_order
+"I changed my mind about my purchase, please cancel it",cancel_order
+Please call off my latest order,cancel_order
+How do I cancel an order I just made,cancel_order
+"I no longer want the item, cancel my order",cancel_order
+Cancel the shoes I ordered yesterday,cancel_order
+Could you remove my order from the system,cancel_order
+What will the weather be like in Hanoi today,check_weather
+Is it going to rain in Tokyo tomorrow,check_weather
+Tell me the forecast for Da Nang this weekend,check_weather
+Will it be sunny in Singapore this afternoon,check_weather
+What is the temperature in Paris right now,check_weather
+Give me the weather report for London,check_weather
+Is there a chance of rain in Bangkok today,check_weather
+How cold will it be in Seoul tonight,check_weather
+Show me tomorrow's forecast for Sydney,check_weather
+Do I need an umbrella in Berlin today,check_weather

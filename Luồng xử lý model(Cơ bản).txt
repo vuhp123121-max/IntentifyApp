@@ -1,0 +1,74 @@
+Tổng thể có 10 setences
+và có 3 intent
+
+Đã thêm sentences và intent 
+Tổng hiện tại là 40 sentences và 3 intent
+
+phần model này hiện tại đang cần tạo mô hình các ý trong câu
+ 
+tạo lớp
+class IntentClassifier(nn.Module):
+Lớp kế thừa nn.Module có thể theo dõi cá tham số cần học và tính gradient khi huấn luyện
+--def __init__(self, vocab_size, num_classes, embedding_dim=32, padding_idx=0):
+
+- vocab_size: số từ khác nhau trong từ điển. Ví dụ, nếu có 500 từ thì giá trị là 500, cộng thêm các token đặc biệt nếu ta đưa chúng vào từ điển.
+- num_classes: số nhãn intent. Dữ liệu hiện có 3 intent, nên thường là 3.
+- embedding_dim: số chiều dùng để biểu diễn mỗi từ. Ở đây mỗi từ có một vector 32 số.
+- padding_idx=0: mã dành riêng để đệm các câu ngắn hơn; mô hình sẽ bỏ qua mã này khi tính biểu diễn câu.
+
+2. Tạo embedding cho từ
+
+self.embedding = nn.Embedding(
+    num_embeddings=vocab_size,
+    embedding_dim=embedding_dim,
+    padding_idx=padding_idx,
+)
+
+
+Mỗi mã từ được ánh xạ thành một vector có 32 số(cơ bản). Ban đầu các vector được khởi tạo tự động; trong lúc huấn luyện, PyTorch điều chỉnh chúng để hỗ trợ phân loại intent
+
+
+3. Tạo lớp phân loại
+self.classifier = nn.Linear(embedding_dim, num_classes)
+
+Lớp tuyến tính nhận vector biểu diễn câu gồm 32 giá trị rồi tạo ra một điểm số cho mỗi intent. Với 3 intent, đầu ra có 3 điểm số, theo thứ tự nhãn mà phần dữ liệu quy định.
+Các điểm số này chưa phải xác suất. Khi dự đoán, ta thường chọn intent có điểm cao nhất; khi huấn luyện, hàm loss sẽ dùng các điểm số đó để điều chỉnh mô hình.
+
+
+Hàm foward mô tả dữ liệu đi qua mô hình
+embeddings = self.embedding(token_ids)
+
+token_ids có dạng [số câu, độ dài câu]. Mỗi số là mã của một từ. Lệnh này đổi từng mã thành vector embedding. Kết quả có dạng [số câu, độ dài câu, 32].
+
+
+mask = (token_ids != 0).unsqueeze(-1)
+
+Tạo mặt nạ: từ thật có giá trị True, vị trí đệm 0 có giá trị False. unsqueeze(-1) thêm một chiều để mặt nạ áp dụng được lên 32 giá trị của mỗi embedding.
+
+embeddings = embeddings * mask
+Đặt embedding ở vị trí đệm thành 0 để padding không ảnh hưởng đến biểu diễn câu.
+
+summed_embeddings = embeddings.sum(dim=1)
+Cộng embedding của các từ trong mỗi câu. Trục dim=1 là trục độ dài câu.
+
+token_counts = mask.sum(dim=1).clamp(min=1)
+Đếm số từ thật trong mỗi câu. clamp(min=1) ngăn phép chia cho 0 nếu có câu rỗng sau khi xử lý.
+
+sentence_embeddings = summed_embeddings / token_counts
+
+Lấy trung bình embedding của các từ thật để thu được một vector đại diện cho mỗi câu. Cách này đơn giản nhưng bỏ qua thứ tự từ: chẳng hạn “book a flight” và “flight a book” có thể có biểu diễn khá giống nhau.
+
+return self.classifier(sentence_embeddings)
+
+Đưa vector câu qua lớp phân loại và trả về các điểm số intent. Mô hình chưa tự biết nhãn nào ứng với mỗi vị trí; phần huấn luyện sẽ cần một danh sách nhãn theo thứ tự cố định.
+
+Luồng Model:
+Mã các từ
+   ↓
+Embedding cho từng từ
+   ↓
+Trung bình embedding của từ trong câu
+   ↓
+Lớp tuyến tính
+   ↓
+Điểm số cho từng intent
